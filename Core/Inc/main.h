@@ -61,6 +61,8 @@ void Error_Handler(void);
 #define LED_GREEN_R_GPIO_Port GPIOC
 #define LED_RED_R_Pin GPIO_PIN_14
 #define LED_RED_R_GPIO_Port GPIOC
+#define MOTOR4_Pin GPIO_PIN_5
+#define MOTOR4_GPIO_Port GPIOA
 #define LED_GREEN_L_Pin GPIO_PIN_6
 #define LED_GREEN_L_GPIO_Port GPIOA
 #define LED_RED_L_Pin GPIO_PIN_7
