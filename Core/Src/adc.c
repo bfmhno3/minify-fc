@@ -21,6 +21,7 @@
 #include "adc.h"
 
 /* USER CODE BEGIN 0 */
+/* PB1 / ADC1_IN9 is reserved for external-module detect sampling. */
 
 /* USER CODE END 0 */
 

@@ -29,6 +29,7 @@
 /* Configure GPIO                                                             */
 /*----------------------------------------------------------------------------*/
 /* USER CODE BEGIN 1 */
+/* PB0 is the shared external-module power/control pin. */
 
 /* USER CODE END 1 */
 

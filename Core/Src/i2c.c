@@ -144,6 +144,7 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef* i2cHandle)
   else if(i2cHandle->Instance==I2C3)
   {
   /* USER CODE BEGIN I2C3_MspInit 0 */
+  /* PA8 and PB4 are shared with external-module functions and must stay coordinated with bsp_module. */
 
   /* USER CODE END I2C3_MspInit 0 */
 
