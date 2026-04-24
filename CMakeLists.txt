@@ -50,6 +50,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/BSP/Src/bsp_watchdog.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/BSP/Src/bsp_module.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/BSP/Src/bsp_flash.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/BSP/Src/bsp_sensors.c
 )
 
 # Add include paths
