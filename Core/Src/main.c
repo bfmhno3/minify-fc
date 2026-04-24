@@ -31,7 +31,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "app/app_boot.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -108,7 +108,7 @@ int main(void)
   MX_I2C3_Init();
   MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
-
+  app_boot_init();
   /* USER CODE END 2 */
 
   /* Init scheduler */

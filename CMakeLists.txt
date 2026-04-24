@@ -51,12 +51,14 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/BSP/Src/bsp_module.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/BSP/Src/bsp_flash.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/BSP/Src/bsp_sensors.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/app/app_boot.c
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/BSP/Inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc
 )
 
 # Add project symbols (macros)
