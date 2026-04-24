@@ -16,6 +16,11 @@ void bsp_watchdog_init(uint32_t timeout_ms)
 
 void bsp_watchdog_kick(void)
 {
+    if (!watchdog_initialized && (hiwdg.Instance == IWDG))
+    {
+        watchdog_initialized = true;
+    }
+
     if (!watchdog_initialized)
     {
         return;
