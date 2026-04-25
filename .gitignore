@@ -22,3 +22,5 @@ cmake-build-*
 
 # Claude Code
 .claude
+.grepai/
+.mcp.json
