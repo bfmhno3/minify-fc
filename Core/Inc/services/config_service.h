@@ -10,6 +10,8 @@ extern "C" {
 
 void config_service_init(void);
 bool config_service_test(void);
+bool config_service_is_flying(void);
+void config_service_set_flying(bool flying);
 
 const config_param_t* config_service_get(void);
 config_param_t* config_service_mut(void);

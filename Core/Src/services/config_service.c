@@ -14,6 +14,7 @@ static config_param_t configParamDefault;
 
 static bool isInit = false;
 static bool isDirty = false;
+static volatile bool isFlying = false;
 
 static SemaphoreHandle_t mutex = NULL;
 static QueueHandle_t saveQueue = NULL;
@@ -149,6 +150,16 @@ void config_service_init(void)
 bool config_service_test(void)
 {
     return isInit;
+}
+
+bool config_service_is_flying(void)
+{
+    return isFlying;
+}
+
+void config_service_set_flying(bool flying)
+{
+    isFlying = flying;
 }
 
 const config_param_t* config_service_get(void)
