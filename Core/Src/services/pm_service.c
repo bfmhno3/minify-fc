@@ -12,11 +12,11 @@ static float battery_voltage_min = 0.0f;
 static uint32_t low_power_timestamp = 0;
 static pm_state_t pm_state = PM_STATE_BATTERY;
 static pm_syslink_info_t pm_syslink_info;
-static bool isInit = false;
+static bool is_init = false;
 
 void pm_service_init(void)
 {
-    if (isInit)
+    if (is_init)
     {
         return;
     }
@@ -28,17 +28,17 @@ void pm_service_init(void)
     pm_state = PM_STATE_BATTERY;
     memset(&pm_syslink_info, 0, sizeof(pm_syslink_info));
 
-    isInit = true;
+    is_init = true;
 }
 
 bool pm_service_test(void)
 {
-    return isInit && (battery_voltage > 0);
+    return is_init && (battery_voltage > 0);
 }
 
 void pm_service_update_voltage(void *atkp)
 {
-    if (!isInit || atkp == NULL)
+    if (!is_init || atkp == NULL)
     {
         return;
     }

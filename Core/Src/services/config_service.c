@@ -9,15 +9,15 @@
 
 #define CONFIG_PARAM_ADDR (0x08004000UL)
 
-static config_param_t configParam;
-static config_param_t configParamDefault;
+static config_param_t config_param;
+static config_param_t config_param_default;
 
-static bool isInit = false;
-static bool isDirty = false;
-static volatile bool isFlying = false;
+static bool is_init = false;
+static bool is_dirty = false;
+static volatile bool is_flying = false;
 
 static SemaphoreHandle_t mutex = NULL;
-static QueueHandle_t saveQueue = NULL;
+static QueueHandle_t save_queue = NULL;
 
 static uint8_t config_checksum(const config_param_t *data)
 {
@@ -36,75 +36,75 @@ static uint8_t config_checksum(const config_param_t *data)
 
 static void config_set_defaults(void)
 {
-    configParam.version = CONFIG_VERSION;
+    config_param.version = CONFIG_VERSION;
 
-    configParam.pidAngle.roll.kp = 8.0f;
-    configParam.pidAngle.roll.ki = 0.0f;
-    configParam.pidAngle.roll.kd = 0.0f;
+    config_param.pidAngle.roll.kp = 8.0f;
+    config_param.pidAngle.roll.ki = 0.0f;
+    config_param.pidAngle.roll.kd = 0.0f;
 
-    configParam.pidAngle.pitch.kp = 8.0f;
-    configParam.pidAngle.pitch.ki = 0.0f;
-    configParam.pidAngle.pitch.kd = 0.0f;
+    config_param.pidAngle.pitch.kp = 8.0f;
+    config_param.pidAngle.pitch.ki = 0.0f;
+    config_param.pidAngle.pitch.kd = 0.0f;
 
-    configParam.pidAngle.yaw.kp = 20.0f;
-    configParam.pidAngle.yaw.ki = 0.0f;
-    configParam.pidAngle.yaw.kd = 1.5f;
+    config_param.pidAngle.yaw.kp = 20.0f;
+    config_param.pidAngle.yaw.ki = 0.0f;
+    config_param.pidAngle.yaw.kd = 1.5f;
 
-    configParam.pidRate.roll.kp = 300.0f;
-    configParam.pidRate.roll.ki = 0.0f;
-    configParam.pidRate.roll.kd = 6.5f;
+    config_param.pidRate.roll.kp = 300.0f;
+    config_param.pidRate.roll.ki = 0.0f;
+    config_param.pidRate.roll.kd = 6.5f;
 
-    configParam.pidRate.pitch.kp = 300.0f;
-    configParam.pidRate.pitch.ki = 0.0f;
-    configParam.pidRate.pitch.kd = 6.5f;
+    config_param.pidRate.pitch.kp = 300.0f;
+    config_param.pidRate.pitch.ki = 0.0f;
+    config_param.pidRate.pitch.kd = 6.5f;
 
-    configParam.pidRate.yaw.kp = 200.0f;
-    configParam.pidRate.yaw.ki = 18.5f;
-    configParam.pidRate.yaw.kd = 0.0f;
+    config_param.pidRate.yaw.kp = 200.0f;
+    config_param.pidRate.yaw.ki = 18.5f;
+    config_param.pidRate.yaw.kd = 0.0f;
 
-    configParam.pidPos.vx.kp = 4.5f;
-    configParam.pidPos.vx.ki = 0.0f;
-    configParam.pidPos.vx.kd = 0.0f;
+    config_param.pidPos.vx.kp = 4.5f;
+    config_param.pidPos.vx.ki = 0.0f;
+    config_param.pidPos.vx.kd = 0.0f;
 
-    configParam.pidPos.vy.kp = 4.5f;
-    configParam.pidPos.vy.ki = 0.0f;
-    configParam.pidPos.vy.kd = 0.0f;
+    config_param.pidPos.vy.kp = 4.5f;
+    config_param.pidPos.vy.ki = 0.0f;
+    config_param.pidPos.vy.kd = 0.0f;
 
-    configParam.pidPos.vz.kp = 100.0f;
-    configParam.pidPos.vz.ki = 150.0f;
-    configParam.pidPos.vz.kd = 10.0f;
+    config_param.pidPos.vz.kp = 100.0f;
+    config_param.pidPos.vz.ki = 150.0f;
+    config_param.pidPos.vz.kd = 10.0f;
 
-    configParam.pidPos.x.kp = 4.0f;
-    configParam.pidPos.x.ki = 0.0f;
-    configParam.pidPos.x.kd = 0.6f;
+    config_param.pidPos.x.kp = 4.0f;
+    config_param.pidPos.x.ki = 0.0f;
+    config_param.pidPos.x.kd = 0.6f;
 
-    configParam.pidPos.y.kp = 4.0f;
-    configParam.pidPos.y.ki = 0.0f;
-    configParam.pidPos.y.kd = 0.6f;
+    config_param.pidPos.y.kp = 4.0f;
+    config_param.pidPos.y.ki = 0.0f;
+    config_param.pidPos.y.kd = 0.6f;
 
-    configParam.pidPos.z.kp = 6.0f;
-    configParam.pidPos.z.ki = 0.0f;
-    configParam.pidPos.z.kd = 4.5f;
+    config_param.pidPos.z.kp = 6.0f;
+    config_param.pidPos.z.ki = 0.0f;
+    config_param.pidPos.z.kd = 4.5f;
 
-    configParam.trimP = 0.0f;
-    configParam.trimR = 0.0f;
-    configParam.thrustBase = 34000;
+    config_param.trimP = 0.0f;
+    config_param.trimR = 0.0f;
+    config_param.thrustBase = 34000;
 
-    configParam.checksum = config_checksum(&configParam);
+    config_param.checksum = config_checksum(&config_param);
 
-    memcpy(&configParamDefault, &configParam, sizeof(config_param_t));
+    memcpy(&config_param_default, &config_param, sizeof(config_param_t));
 }
 
 static bool config_load_from_flash(void)
 {
-    if (!bsp_flash_read(CONFIG_PARAM_ADDR, &configParam, sizeof(config_param_t)))
+    if (!bsp_flash_read(CONFIG_PARAM_ADDR, &config_param, sizeof(config_param_t)))
     {
         return false;
     }
 
-    if (configParam.version == CONFIG_VERSION)
+    if (config_param.version == CONFIG_VERSION)
     {
-        if (config_checksum(&configParam) == configParam.checksum)
+        if (config_checksum(&config_param) == config_param.checksum)
         {
             return true;
         }
@@ -115,19 +115,19 @@ static bool config_load_from_flash(void)
 
 static bool config_save_to_flash(void)
 {
-    configParam.checksum = config_checksum(&configParam);
+    config_param.checksum = config_checksum(&config_param);
 
     if (!bsp_flash_erase(CONFIG_PARAM_ADDR, sizeof(config_param_t)))
     {
         return false;
     }
 
-    return bsp_flash_write(CONFIG_PARAM_ADDR, &configParam, sizeof(config_param_t));
+    return bsp_flash_write(CONFIG_PARAM_ADDR, &config_param, sizeof(config_param_t));
 }
 
 void config_service_init(void)
 {
-    if (isInit)
+    if (is_init)
     {
         return;
     }
@@ -139,39 +139,39 @@ void config_service_init(void)
         config_save_to_flash();
     }
 
-    memcpy(&configParamDefault, &configParam, sizeof(config_param_t));
+    memcpy(&config_param_default, &config_param, sizeof(config_param_t));
 
     mutex = xSemaphoreCreateMutex();
-    saveQueue = xQueueCreate(4, sizeof(bool));
+    save_queue = xQueueCreate(4, sizeof(bool));
 
-    isInit = true;
+    is_init = true;
 }
 
 bool config_service_test(void)
 {
-    return isInit;
+    return is_init;
 }
 
 bool config_service_is_flying(void)
 {
-    return isFlying;
+    return is_flying;
 }
 
 void config_service_set_flying(bool flying)
 {
-    isFlying = flying;
+    is_flying = flying;
 }
 
 const config_param_t* config_service_get(void)
 {
-    if (!isInit)
+    if (!is_init)
     {
         return NULL;
     }
 
     const config_param_t *result;
     xSemaphoreTake(mutex, portMAX_DELAY);
-    result = &configParam;
+    result = &config_param;
     xSemaphoreGive(mutex);
 
     return result;
@@ -179,38 +179,38 @@ const config_param_t* config_service_get(void)
 
 config_param_t* config_service_mut(void)
 {
-    if (!isInit)
+    if (!is_init)
     {
         return NULL;
     }
 
-    return &configParam;
+    return &config_param;
 }
 
 void config_service_mark_dirty(void)
 {
-    if (!isInit)
+    if (!is_init)
     {
         return;
     }
 
-    isDirty = true;
+    is_dirty = true;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    xQueueSendFromISR(saveQueue, &isDirty, &xHigherPriorityTaskWoken);
+    xQueueSendFromISR(save_queue, &is_dirty, &xHigherPriorityTaskWoken);
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 void config_service_reset_pid(void)
 {
-    if (!isInit)
+    if (!is_init)
     {
         return;
     }
 
     xSemaphoreTake(mutex, portMAX_DELAY);
-    configParam.pidAngle = configParamDefault.pidAngle;
-    configParam.pidRate = configParamDefault.pidRate;
-    configParam.pidPos = configParamDefault.pidPos;
+    config_param.pidAngle = config_param_default.pidAngle;
+    config_param.pidRate = config_param_default.pidRate;
+    config_param.pidPos = config_param_default.pidPos;
     xSemaphoreGive(mutex);
 
     config_service_mark_dirty();
@@ -224,7 +224,7 @@ void config_service_task(void *arg)
 
     while (1)
     {
-        if (xQueueReceive(saveQueue, &dirty, portMAX_DELAY) == pdTRUE)
+        if (xQueueReceive(save_queue, &dirty, portMAX_DELAY) == pdTRUE)
         {
             if (dirty)
             {
@@ -234,7 +234,7 @@ void config_service_task(void *arg)
 
                 if (success)
                 {
-                    isDirty = false;
+                    is_dirty = false;
                 }
             }
         }
