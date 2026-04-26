@@ -24,3 +24,4 @@ cmake-build-*
 .claude
 .grepai/
 .mcp.json
+.idea/
